@@ -9,7 +9,7 @@ const addContactSchema = Joi.object({
 });
 
 const updateContactSchema = Joi.object({
-  id: Joi.string().required(),
+  // id: Joi.string().required(),
   name: Joi.string(),
   email: Joi.string().email(),
   phone: Joi.string().pattern(new RegExp("^\\(\\d{3}\\) \\d{3}-\\d{4}$")),

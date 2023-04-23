@@ -29,10 +29,11 @@ router.put(
   ctrl.updateContactById
 );
 
-router.delete("/:contactId", isValidId, ctrl.deleteContact);
+router.delete("/:contactId", authenticate, isValidId, ctrl.deleteContact);
 
 router.patch(
   "/:contactId/favorite",
+  authenticate,
   isValidId,
   // validateBody(updateStatusContactSchema),
   ctrl.updateStatusContact

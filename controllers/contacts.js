@@ -10,7 +10,9 @@ const getAll = async (req, res, next) => {
 };
 
 const getContactbyId = async (req, res, next) => {
-  const result = await Contact.findById(req.params.contactId);
+  const { contactId } = req.params;
+  const { id: userId } = req.user;
+  const result = await Contact.findById({ _id: contactId, owner: userId });
   if (!result) {
     return res.status(404).json({ message: "Not found" });
   }
@@ -26,7 +28,11 @@ const createContact = async (req, res, next) => {
 
 const deleteContact = async (req, res, next) => {
   const { contactId } = req.params;
-  const result = await Contact.findByIdAndRemove({ _id: contactId });
+  const { id: userId } = req.user;
+  const result = await Contact.findByIdAndRemove({
+    _id: contactId,
+    owner: userId,
+  });
   if (!result) {
     return res.status(404).json({ message: "Not found" });
   }
@@ -35,24 +41,34 @@ const deleteContact = async (req, res, next) => {
 
 const updateContactById = async (req, res, next) => {
   const { contactId } = req.params;
-  const result = await Contact.findByIdAndUpdate({ _id: contactId }, req.body, {
-    new: true,
-  });
+  const { id: userId } = req.user;
+  const result = await Contact.findByIdAndUpdate(
+    { _id: contactId, owner: userId },
+    req.body,
+    {
+      new: true,
+    }
+  );
   if (!result) {
     return res.status(404).json({ message: "Not found" });
   }
   res.status(200).json(result);
 };
 
-const updateStatusContact = async (req, res, next) => {
+const updateStatusContact = async (req, res) => {
   if (req.body.favorite === undefined) {
     res.status(400).json({ message: "Missing field favorite" });
     return;
   }
   const { contactId } = req.params;
-  const result = await Contact.findByIdAndUpdate(contactId, req.body, {
-    new: true,
-  });
+  const { id: userId } = req.user;
+  const result = await Contact.findByIdAndUpdate(
+    { _id: contactId, owner: userId },
+    req.body,
+    {
+      new: true,
+    }
+  );
   if (!result) {
     return res.status(404).json({ message: "Not found" });
   }

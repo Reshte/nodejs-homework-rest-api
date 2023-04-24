@@ -6,26 +6,34 @@ const { validateBody, isValidId } = require("../../middlewares");
 const {
   addContactSchema,
   updateContactSchema,
-  updateStatusContactSchema,
+  // updateStatusContactSchema,
 } = require("../../schema/index");
+const { authenticate } = require("../../middlewares");
 
-router.get("/", ctrl.getAll);
+router.get("/", authenticate, ctrl.getAll);
 
-router.get("/:contactId", isValidId, ctrl.getContactbyId);
+router.get("/:contactId", authenticate, isValidId, ctrl.getContactbyId);
 
-router.post("/", validateBody(addContactSchema), ctrl.createContact);
+router.post(
+  "/",
+  authenticate,
+  validateBody(addContactSchema),
+  ctrl.createContact
+);
 
 router.put(
   "/:contactId",
+  authenticate,
   isValidId,
   validateBody(updateContactSchema),
   ctrl.updateContactById
 );
 
-router.delete("/:contactId", isValidId, ctrl.deleteContact);
+router.delete("/:contactId", authenticate, isValidId, ctrl.deleteContact);
 
 router.patch(
   "/:contactId/favorite",
+  authenticate,
   isValidId,
   // validateBody(updateStatusContactSchema),
   ctrl.updateStatusContact
